@@ -1,6 +1,6 @@
 {
   "name": "videoconference-app",
-  "version": "0.0.3",
+  "version": "0.1.2",
   "description": "Videotelephony and online chat services through a cloud-based peer-to-peer using nodeJS, WebRTC and Websockets",
   "scripts": {
     "dev": "nodemon"
@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "express": "^4.17.3",
-    "pug": "^3.0.2"
+    "pug": "^3.0.2",
+    "ws": "^8.5.0"
   }
 }

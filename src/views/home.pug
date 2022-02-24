@@ -6,6 +6,12 @@ html(lang="en")
   body 
     header KAIGI
     main 
+      div#myStream 
+        video#myFace(autoplay, playsinline, width="400", height="400")
+        button#mute Mute
+        button#camera Camera Off
+        select#cameras
+        select#mics
       div#welcome 
         form 
           input(type="text", placeholder="room name", required)

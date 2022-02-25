@@ -6,16 +6,18 @@ html(lang="en")
   body 
     header KAIGI
     main 
-      div#myStream 
-        video#myFace(autoplay, playsinline, width="400", height="400")
-        button#mute Mute
-        button#camera Camera Off
-        select#cameras
-        select#mics
       div#welcome 
         form 
           input(type="text", placeholder="room name", required)
           button Enter Room
+
+      div#call 
+        div#myStream 
+          video#myFace(autoplay, playsinline, width="400", height="400")
+          button#mute Mute
+          button#camera Camera Off
+          select#cameras
+          select#mics
     
   script(src="/socket.io/socket.io.js") 
   script(src="/public/js/app.js") 

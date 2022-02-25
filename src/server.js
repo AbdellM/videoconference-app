@@ -8,13 +8,17 @@ app.set("view engine", "pug");
 app.set("views", __dirname + "/views");
 app.use("/public", express.static(__dirname + "/public"));
 
-app.get("/", (req, res) => res.render("home"));
+app.get("/", (_, res) => res.render("home"));
 
 const httpServer = http.createServer(app);
 const socketIOServer = SocketIO(httpServer);
 
 socketIOServer.on("connection", (socket) => {
-  socket.on("room", (msg) => console.log(msg));
+  socket.on("join-room", (roomName, doneFnc) => {
+    socket.join(roomName);
+    doneFnc();
+    socket.to(roomName).emit("welcome");
+  });
 });
 
 httpServer.listen(3000, () => {

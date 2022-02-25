@@ -66,8 +66,6 @@ async function getMedia(deviceIdCam, deviceIdMic) {
     );
     //giving the stream to the video
     myFace.srcObject = myStream;
-    console.log(myStream.getAudioTracks());
-
     if (!deviceIdCam) {
       await getCamera();
       await getMic();
@@ -121,13 +119,26 @@ micSelect.addEventListener("input", () => {
   getMedia(cameraSelect.value, micSelect.value);
 });
 
-getMedia();
-// const welcome = document.querySelector("#welcome");
-// const form = welcome.querySelector("form");
+// show welcome first
+const welcome = document.querySelector("#welcome");
+const call = document.querySelector("#call");
+let roomName;
 
-// form.addEventListener("submit", (event) => {
-//   event.preventDefault();
-//   const input = form.querySelector("input");
-//   socket.emit("room", { payload: input.value });
-//   input.value = "";
-// });
+call.hidden = true;
+const welcomForm = welcome.querySelector("form");
+// join room
+welcomForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const input = welcomForm.querySelector("input");
+  socket.emit("join-room", input.value, () => {
+    call.hidden = false;
+    welcome.hidden = true;
+    getMedia();
+  });
+  roomName = input.value;
+  input.value = "";
+});
+
+socket.on("welcome", () => {
+  console.log("d");
+});

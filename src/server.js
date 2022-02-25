@@ -19,6 +19,9 @@ socketIOServer.on("connection", (socket) => {
     doneFnc();
     socket.to(roomName).emit("welcome");
   });
+  socket.on("offer", (offer, roomName) => {
+    socket.to(roomName).emit(offer);
+  });
 });
 
 httpServer.listen(3000, () => {

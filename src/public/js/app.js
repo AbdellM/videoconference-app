@@ -124,21 +124,41 @@ const welcome = document.querySelector("#welcome");
 const call = document.querySelector("#call");
 let roomName;
 
+async function startMedia() {
+  call.hidden = false;
+  welcome.hidden = true;
+  await getMedia();
+  makeConnection();
+}
+
 call.hidden = true;
 const welcomForm = welcome.querySelector("form");
-// join room
+// SOCKET join room
 welcomForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const input = welcomForm.querySelector("input");
-  socket.emit("join-room", input.value, () => {
-    call.hidden = false;
-    welcome.hidden = true;
-    getMedia();
-  });
+  socket.emit("join-room", input.value, startMedia);
   roomName = input.value;
   input.value = "";
 });
 
-socket.on("welcome", () => {
-  console.log("d");
+socket.on("welcome", async () => {
+  const offer = await myPeerConnection.createOffer();
+  myPeerConnection.setLocalDescription(offer);
+  socket.emit("offer", offer, roomName);
 });
+
+socket.on("offer", (offer) => {
+  const offer = await myPeerConnection.createOffer();
+  myPeerConnection.setLocalDescription(offer);
+  socket.emit("offer", offer, roomName);
+});
+
+// RTC connection
+let myPeerConnection;
+function makeConnection() {
+  myPeerConnection = new RTCPeerConnection();
+  myStream
+    .getTracks()
+    .forEach((track) => myPeerConnection.addTrack(track, myStream));
+}

@@ -113,11 +113,25 @@ cameraBtn.addEventListener("click", () => {
 //event on changing camera
 cameraSelect.addEventListener("input", () => {
   getMedia(cameraSelect.value, micSelect.value);
+  if (myPeerConnection) {
+    const videoTrack = myStream.getVideoTracks()[0];
+    const videoSender = myPeerConnection
+      .getSenders()
+      .find((sender) => sender.track.kind === "video");
+    videoSender.replaceTrack(videoTrack);
+  }
 });
 
 //event on changing mic
 micSelect.addEventListener("input", () => {
   getMedia(cameraSelect.value, micSelect.value);
+  if (myPeerConnection) {
+    const audioTrack = myStream.getAudioTracks()[0];
+    const audioSender = myPeerConnection
+      .getSenders()
+      .find((sender) => sender.track.kind === "audio");
+    audioSender.replaceTrack(audioTrack);
+  }
 });
 
 // show welcome first
@@ -173,7 +187,19 @@ socket.on("ice", async (candidate) => {
 // RTC connection
 const peersFace = document.querySelector("#peersFace");
 function makeConnection() {
-  myPeerConnection = new RTCPeerConnection();
+  myPeerConnection = new RTCPeerConnection({
+    iceServers: [
+      {
+        urls: [
+          "stun:stun.l.google.com:19302",
+          "stun:stun1.l.google.com:19302",
+          "stun:stun2.l.google.com:19302",
+          "stun:stun3.l.google.com:19302",
+          "stun:stun4.l.google.com:19302",
+        ],
+      },
+    ],
+  });
   myPeerConnection.addEventListener("icecandidate", (data) => {
     socket.emit("ice", data.candidate, roomName);
   });
